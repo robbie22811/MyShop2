@@ -39,58 +39,95 @@ namespace BackyardSchedules
             int[,] roundTeams = new int[numofRounds, num_teams];
 
             string results = SetTournament(gamesToPlay, team_names, eventList, eventCounter, roundEvents, roundTeams, byeID);
+            
+            Console.WriteLine(results);
 
-            for (
-                int i = 0; i <= gamesToPlay.GetUpperBound(0); i++)
+            for (int i = 0; i <= gamesToPlay.GetUpperBound(0); i++)
             {
                 for (int ii = 0; ii <= gamesToPlay.GetUpperBound(1); ii++)
                     if (gamesToPlay[i,ii] == 0)
                         Console.WriteLine($"{team_names[i]} vs. {team_names[ii]}");
             }
 
-            Console.WriteLine(results);
             Console.ReadLine();
-
+        
         }
 
         static string SetTournament(int[,] gamesToPlay, List<string> teamNames, List<string> games, int[,] eventCounter, int[,] roundCounter, int[,] teamRoundCounter, int byeID)
         {
             string roundPair = "";
+            bool gameFound = false;
 
             int n = teamNames.Count;
             int numofRounds = n - 1;
 
-            int teamId;
-            int team2Id;
-
             for (int r = 0; r < numofRounds; r++)
             {
-                for (int i = 0; i <= gamesToPlay.GetUpperBound(0); i++)
+                for (int gg = 0; gg < games.Count; gg++)
                 {
-                    for (int ii = 0; ii <= gamesToPlay.GetUpperBound(1); ii++)
+                    gameFound = false;
+                    int loopCount = 0;
+                    if (roundCounter[r, gg] == 0)
                     {
-                        if (gamesToPlay[i, ii] == 0)
+                        int value1 = 0;
+                        int value2 = 0;
+                        int currentLow = 0;
+                        int saveValue = 0;
+
+                        while (gameFound == false)
                         {
-                            if (teamRoundCounter[r, i] == 0 && teamRoundCounter[r, ii] == 0)
+                            if (loopCount > 0)
                             {
-                                for (int gg = 0; gg < games.Count; gg++)
+                                if (value2 == numofRounds)
                                 {
-                                    if (eventCounter[i, gg] == 0 && eventCounter[ii, gg] == 0 && roundCounter[r, gg] == 0)
+                                    value1 = currentLow + 1;
+                                    value2 = value1;
+                                    currentLow++;
+                                }
+                                else if (value1 == value2)
+                                {
+                                    value1++;
+                                }
+                                else if (value1 < value2)
+                                {
+                                    saveValue = value1;
+                                    value1 = value2 + 1;
+                                    value2 = saveValue;
+                                }
+                                else
+                                {
+                                    saveValue = value1;
+                                    value1 = value2;
+                                    value2 = saveValue;
+                                }
+                            }
+
+                            for (int t1 = 0; t1 <= gamesToPlay.GetUpperBound(0) && gameFound == false; t1++)
+                            {
+                                for (int t2 = 0; t2 <= gamesToPlay.GetUpperBound(1) && gameFound == false; t2++)
+                                {
+                                    if (gamesToPlay[t1, t2] == 0)
                                     {
-                                        roundPair += "\n" + r + ": " + teamNames[i] + " will play " + teamNames[ii] + " in " + games[gg];
-                                        eventCounter[i, gg] = 1;
-                                        eventCounter[ii, gg] = 1;
-                                        gamesToPlay[i, ii] = r + 1;
-                                        roundCounter[r, gg] = 1;
-                                        teamRoundCounter[r, i] = 1;
-                                        teamRoundCounter[r, ii] = 1;
-                                        break;
+                                        if (teamRoundCounter[r, t1] == 0 && teamRoundCounter[r, t2] == 0)
+                                        {
+                                            if (eventCounter[t1, gg] == value1 && eventCounter[t2, gg] == value2)
+                                            {
+                                                roundPair += "\n" + r + ": " + teamNames[t1] + " will play " + teamNames[t2] + " in " + games[gg];
+                                                eventCounter[t1, gg] = 1;
+                                                eventCounter[t2, gg] = 1;
+                                                gamesToPlay[t1, t2] = r + 1;
+                                                roundCounter[r, gg] = 1;
+                                                teamRoundCounter[r, t1] = 1;
+                                                teamRoundCounter[r, t2] = 1;
+                                                gameFound = true;
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            loopCount++;
                         }
                     }
-
                 }
             }
 
