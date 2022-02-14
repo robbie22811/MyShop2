@@ -14,17 +14,17 @@ namespace BackyardSchedules
 
             // Get the events
             // Textbox on webform -- enter game names
-            List<string> eventList = new List<string> { "bags", "darts" };
+            List<string> eventList = new List<string> { "bags", "darts"};
 
             // Get the teams.
             // Textbox on the webform -- string all_teams = txtTeams.Text;
-            string all_teams = "One\rTwo\nThree\nFour";
+            string all_teams = "One\rTwo\nThree";
             List<string> team_names = GenerateTeams(all_teams);
 
             if (team_names.Count % 2 > 0)
             {
-                team_names.Add("BYE");
-                byeID = team_names.Count - 1;
+                //team_names.Add("BYE");
+                byeID = 1;
             }
 
 
@@ -32,7 +32,7 @@ namespace BackyardSchedules
             int num_teams = team_names.Count;
             int[,] gamesToPlay = GenerateGames(num_teams);
 
-            int numofRounds = num_teams - 1;
+            int numofRounds = num_teams;
 
             int[,] eventCounter = new int[num_teams, eventList.Count];
             int[,] roundEvents = new int[numofRounds, eventList.Count];
@@ -60,10 +60,17 @@ namespace BackyardSchedules
 
             int n = teamNames.Count;
             int numofRounds = n - 1;
-
+            int gameLoops = games.Count;
+  
             for (int r = 0; r < numofRounds; r++)
             {
-                for (int gg = 0; gg < games.Count; gg++)
+                if (byeID == 1)
+                {
+                    roundPair += "\n" + r + ": " + teamNames[n - 1 - r] + " BYE";
+                    teamRoundCounter[r, n - 1 - r] = 1;
+                }
+
+                for (int gg = 0; gg < gameLoops; gg++)
                 {
                     gameFound = false;
                     int loopCount = 0;
@@ -74,7 +81,7 @@ namespace BackyardSchedules
                         int currentLow = 0;
                         int saveValue = 0;
 
-                        while (gameFound == false)
+                        while (gameFound == false && loopCount <= 100)
                         {
                             if (loopCount > 0)
                             {
@@ -106,21 +113,18 @@ namespace BackyardSchedules
                             {
                                 for (int t2 = 0; t2 <= gamesToPlay.GetUpperBound(1) && gameFound == false; t2++)
                                 {
-                                    if (gamesToPlay[t1, t2] == 0)
+                                    if (gamesToPlay[t1, t2] == 0 && teamRoundCounter[r, t1] == 0 && teamRoundCounter[r, t2] == 0)
                                     {
-                                        if (teamRoundCounter[r, t1] == 0 && teamRoundCounter[r, t2] == 0)
+                                        if (eventCounter[t1, gg] == value1 && eventCounter[t2, gg] == value2)
                                         {
-                                            if (eventCounter[t1, gg] == value1 && eventCounter[t2, gg] == value2)
-                                            {
-                                                roundPair += "\n" + r + ": " + teamNames[t1] + " will play " + teamNames[t2] + " in " + games[gg];
-                                                eventCounter[t1, gg] = 1;
-                                                eventCounter[t2, gg] = 1;
-                                                gamesToPlay[t1, t2] = r + 1;
-                                                roundCounter[r, gg] = 1;
-                                                teamRoundCounter[r, t1] = 1;
-                                                teamRoundCounter[r, t2] = 1;
-                                                gameFound = true;
-                                            }
+                                            roundPair += "\n" + r + ": " + teamNames[t1] + " will play " + teamNames[t2] + " in " + games[gg];
+                                            eventCounter[t1, gg]++;
+                                            eventCounter[t2, gg]++;
+                                            gamesToPlay[t1, t2] = r + 1;
+                                            roundCounter[r, gg] = 1;
+                                            teamRoundCounter[r, t1] = 1;
+                                            teamRoundCounter[r, t2] = 1;
+                                            gameFound = true;
                                         }
                                     }
                                 }
@@ -130,36 +134,6 @@ namespace BackyardSchedules
                     }
                 }
             }
-
-            //for (var r = 1; r < n; r++)
-            //{
-            //    roundPair += "\n" + r + ":";
-            //    for (var i = 1; i <= n / 2; i++)
-            //    {
-            //        if (i == 1)
-            //        {
-            //            teamId = 0;
-            //            team2Id = (n - 1 + r - 1) % (n - 1) + 1;
-            //            //roundPair += " [" + formatter(1) + "," + formatter((n - 1 + r - 1) % (n - 1) + 2) + "]";
-            //        }
-            //        else
-            //        {
-            //            teamId = (r + i - 2) % (n - 1) + 1;
-            //            team2Id = (n - 1 + r - i) % (n - 1) + 1;
-            //            //roundPair += " [" + formatter( (r+i-2) % (n-1) + 2) + "," + formatter((n - 1 + r - i) % (n - 1) + 2) + "]";
-            //        }
-            //        if (byeID >= 0 && (teamId == byeID || team2Id == byeID))
-            //        {
-            //            roundPair += " BYE  [" + teamNames[teamId] + "," + teamNames[team2Id] + "]";
-            //        }
-            //        else
-            //        {
-            //            string rg = PickGame(roundCounter, r - 1, eventCounter, games, teamId, team2Id, numofRounds);
-            //            roundPair += " " + rg.ToUpper() + " [" + teamNames[teamId] + "," + teamNames[team2Id] + "]";
-            //        }
-
-            //    }
-            //}
 
             return roundPair;
         }
@@ -239,7 +213,6 @@ namespace BackyardSchedules
 
         static int[,] GenerateGames(int numTeams)
         {
-            int n2 = (int)((numTeams - 1) / 2);
             int[,] results = new int[numTeams,numTeams];
 
             int[] teams = new int[numTeams];
