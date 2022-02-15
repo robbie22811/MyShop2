@@ -12,14 +12,15 @@ namespace BackyardSchedules
         {
             // Get the events
             // Textbox on webform -- enter game names
-            List<string> eventList = new List<string> { "bags", "darts" };
+            List<string> eventList = new List<string> { "bags", "darts", "bocce" };
 
             // Get the teams.
             // Textbox on the webform -- string all_teams = txtTeams.Text;
-            string all_teams = "One\rTwo\nThree\nFour";
+            string all_teams = "One\rTwo\nThree\nFour\nFive\nSix";
+
             List<string> team_names = GenerateTeams(all_teams);
 
-            int rotations = 2; //input option
+            int rotations = 1; //input option
 
             string results = SetTournament(team_names, eventList, rotations);
 
@@ -38,18 +39,14 @@ namespace BackyardSchedules
             int gameCount = games.Count;
             int num_teams = teamNames.Count;
             if (num_teams % 2 > 0)
-            {
                 byes = true;
-            }
+
             int roundsPerRotation;
             if (byes)
-            {
                 roundsPerRotation = num_teams;
-            }
             else
-            {
                 roundsPerRotation = (num_teams - 1);
-            }
+
             int numofRounds = roundsPerRotation * rotations;
 
             int[,] gamesToPlay = GenerateGames(num_teams);            
@@ -67,11 +64,11 @@ namespace BackyardSchedules
                 {
                     currentRound++;
 
-                    if (byes)
-                    {
-                        roundPair += "\n" + (currentRound + 1) + ": " + teamNames[num_teams - 1 - round] + " BYE";
-                        teamRoundCounter[currentRound, num_teams - 1 - round] = currentRound + 1;
-                    }
+                    //if (byes)
+                    //{
+                    //    roundPair += "\n" + (currentRound + 1) + ": " + teamNames[num_teams - 1 - round] + " BYE";
+                    //    teamRoundCounter[currentRound, num_teams - 1 - round] = currentRound + 1;
+                    //}
 
                     for (int gameLoops = 0; gameLoops < gameCount; gameLoops++)
                     {
