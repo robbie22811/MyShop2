@@ -22,7 +22,9 @@ namespace BackyardSchedules
 
             int rotations = 1; //input option
 
-            string results = SetTournament(team_names, eventList, rotations);
+            //string results = SetTournament(team_names, eventList, rotations);
+            RoundRobin rr = new RoundRobin();
+            string results = rr.SetRoundRobin(team_names, eventList, rotations);
 
             Console.WriteLine(results);
             Console.ReadLine();
