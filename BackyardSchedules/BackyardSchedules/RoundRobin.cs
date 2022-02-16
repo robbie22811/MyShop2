@@ -13,18 +13,78 @@ namespace BackyardSchedules
             string results = "";
 
             int[,] gamesToPlay = GenerateRoundRobin(teams.Count);
-            int rounds = gamesToPlay.GetUpperBound(1);
+            int rounds = gamesToPlay.GetUpperBound(1) + 1;
+
+            int[,] eventCounter = new int[teams.Count, games.Count];
+            int[,] roundCounter = new int[rounds, games.Count];
+            int[,] teamRoundCounter = new int[rounds, teams.Count];
+
+            int maxLoops = rounds * teams.Count + 1;
 
             for (int rotation = 0; rotation < rotations; rotation++)
             {
-                for (int round = 0; round <= rounds; round++)
+                for (int round = 0; round < rounds; round++)
                 { 
                     for (int teamId1 = 0; teamId1 <= gamesToPlay.GetUpperBound(0); teamId1++)
                     {              
                         int teamId2 = gamesToPlay[teamId1, round];
                         if (teamId1 < teamId2)
-                            results += "\n" +
-                                (round) + teams[teamId1] + " plays " + teams[teamId2]; 
+                        {
+                            bool gameFound = false;
+                            for (int gameLoops = 0; gameLoops < games.Count && gameFound == false; gameLoops++)
+                            {
+                                int loopCount = 0;
+                                int value1 = 0;
+                                int value2 = 0;
+                                int currentLow = 0;
+                                int saveValue;
+
+                                while (gameFound == false && loopCount <= maxLoops) //prevent infinite loop if something goes wrong
+                                {
+                                    if (loopCount > 0)
+                                    {
+                                        if (value2 == rounds)
+                                        {
+                                            value1 = currentLow + 1;
+                                            value2 = value1;
+                                            currentLow++;
+                                        }
+                                        else if (value1 == value2)
+                                        {
+                                            value1++;
+                                        }
+                                        else if (value1 < value2)
+                                        {
+                                            saveValue = value1;
+                                            value1 = value2 + 1;
+                                            value2 = saveValue;
+                                        }
+                                        else
+                                        {
+                                            saveValue = value1;
+                                            value1 = value2;
+                                            value2 = saveValue;
+                                        }
+                                    }
+
+                                    for (int gg = 0; gg < games.Count; gg++)
+                                    {
+                                        if (roundCounter[round, gg] == rotation)
+                                        {
+                                            if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                                            {
+                                                eventCounter[teamId1, gg]++;
+                                                eventCounter[teamId2, gg]++;
+                                                roundCounter[round, gg]++;
+                                                gameFound = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    loopCount++;
+                                }
+                            }
+                        }
                     }
                 }    
             }
