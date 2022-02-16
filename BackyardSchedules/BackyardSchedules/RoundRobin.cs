@@ -8,23 +8,24 @@ namespace BackyardSchedules
 {
     internal class RoundRobin
     {
-        public string SetRoundRobin(List<string> teams, List<string> games, int rotations)
+        public List<Matches> SetRoundRobin(List<string> teams, List<string> games, int rotations)
         {
-            string results = "";
+            List<Matches> matchResult = new List<Matches>();
 
             int[,] gamesToPlay = GenerateRoundRobin(teams.Count);
             int rounds = gamesToPlay.GetUpperBound(1) + 1;
 
             int[,] eventCounter = new int[teams.Count, games.Count];
             int[,] roundCounter = new int[rounds, games.Count];
-            int[,] teamRoundCounter = new int[rounds, teams.Count];
 
             int maxLoops = rounds * teams.Count + 1;
+            int currentRound = 0;
 
             for (int rotation = 0; rotation < rotations; rotation++)
             {
                 for (int round = 0; round < rounds; round++)
-                { 
+                {
+                    currentRound++;
                     for (int teamId1 = 0; teamId1 <= gamesToPlay.GetUpperBound(0); teamId1++)
                     {              
                         int teamId2 = gamesToPlay[teamId1, round];
@@ -67,17 +68,39 @@ namespace BackyardSchedules
                                         }
                                     }
 
-                                    for (int gg = 0; gg < games.Count; gg++)
+                                    if (round % 2 == 0)
                                     {
-                                        if (roundCounter[round, gg] == rotation)
+                                        for (int gg = (games.Count-1); gg >= 0; gg--)
                                         {
-                                            if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                                            if (roundCounter[round, gg] == rotation)
                                             {
-                                                eventCounter[teamId1, gg]++;
-                                                eventCounter[teamId2, gg]++;
-                                                roundCounter[round, gg]++;
-                                                gameFound = true;
-                                                break;
+                                                if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                                                {
+                                                    matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
+                                                    eventCounter[teamId1, gg]++;
+                                                    eventCounter[teamId2, gg]++;
+                                                    roundCounter[round, gg]++;
+                                                    gameFound = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int gg = 0; gg < games.Count; gg++)
+                                        {
+                                            if (roundCounter[round, gg] == rotation)
+                                            {
+                                                if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                                                {
+                                                    matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
+                                                    eventCounter[teamId1, gg]++;
+                                                    eventCounter[teamId2, gg]++;
+                                                    roundCounter[round, gg]++;
+                                                    gameFound = true;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -88,7 +111,7 @@ namespace BackyardSchedules
                     }
                 }    
             }
-            return results;
+            return matchResult;
         }
 
         private const int BYE = -1;
