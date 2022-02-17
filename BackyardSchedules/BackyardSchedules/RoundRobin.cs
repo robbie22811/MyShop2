@@ -17,21 +17,38 @@ namespace BackyardSchedules
 
             int[,] eventCounter = new int[teams.Count, games.Count];
             int[,] roundCounter = new int[rounds, games.Count];
-
+            int[,] teamRoundCounter = new int[teams.Count, rounds];
             int maxLoops = rounds * teams.Count + 1;
             int currentRound = 0;
+            int teamId1 = 0;
 
             for (int rotation = 0; rotation < rotations; rotation++)
             {
                 for (int round = 0; round < rounds; round++)
                 {
                     currentRound++;
-                    for (int teamId1 = 0; teamId1 <= gamesToPlay.GetUpperBound(0); teamId1++)
-                    {              
+                    int startID = round;
+                    if (startID >= teams.Count)
+                        startID = 0;
+
+                    for (int id = 0; id < teams.Count; id++)
+                    { 
+                        if (id > 0)
+                            teamId1++;
+                        else
+                            teamId1 = startID;
+
+                        if (teamId1 >= teams.Count)
+                            teamId1 = 0;
+
+                        bool gameFound = false;
                         int teamId2 = gamesToPlay[teamId1, round];
-                        if (teamId1 < teamId2)
+                        if (teamId2 == -1)
                         {
-                            bool gameFound = false;
+                            matchResult.Add(new Matches { RoundNumber = currentRound, Event = "BYE", TeamOne = teams[teamId1] });
+                        }
+                        else if (teamId1 < teamId2)
+                        {
                             for (int gameLoops = 0; gameLoops < games.Count && gameFound == false; gameLoops++)
                             {
                                 int loopCount = 0;
@@ -79,6 +96,8 @@ namespace BackyardSchedules
                                                     matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
                                                     eventCounter[teamId1, gg]++;
                                                     eventCounter[teamId2, gg]++;
+                                                    teamRoundCounter[teamId1, round]++;
+                                                    teamRoundCounter[teamId2, round]++;
                                                     roundCounter[round, gg]++;
                                                     gameFound = true;
                                                     break;
@@ -97,6 +116,8 @@ namespace BackyardSchedules
                                                     matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
                                                     eventCounter[teamId1, gg]++;
                                                     eventCounter[teamId2, gg]++;
+                                                    teamRoundCounter[teamId1, round]++;
+                                                    teamRoundCounter[teamId2, round]++;
                                                     roundCounter[round, gg]++;
                                                     gameFound = true;
                                                     break;
