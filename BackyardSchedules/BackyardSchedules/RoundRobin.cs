@@ -18,7 +18,7 @@ namespace BackyardSchedules
             int[,] eventCounter = new int[teams.Count, games.Count];
             int[,] roundCounter = new int[rounds, games.Count];
             int[,] teamRoundCounter = new int[teams.Count, rounds];
-            int[] gameSum = new int[games.Count];
+            int gameSum = games.Count - 1;
 
             int maxLoops = rounds * teams.Count + 1;
             int currentRound = 0;
@@ -34,7 +34,7 @@ namespace BackyardSchedules
                     for (int tt = 0; tt < teams.Count; tt++)
                     {
                         int t2 = gamesToPlay[tt, round];
-                        if (tt < t2)
+                        if ((tt < t2 && currentRound % gameSum != 0) || (tt > t2 && currentRound % gameSum == 0)) 
                         {
                             int val = -1;
                             found = false;
