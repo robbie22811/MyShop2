@@ -18,121 +18,159 @@ namespace BackyardSchedules
             int[,] eventCounter = new int[teams.Count, games.Count];
             int[,] roundCounter = new int[rounds, games.Count];
             int[,] teamRoundCounter = new int[teams.Count, rounds];
+            int[] gameSum = new int[games.Count];
+
             int maxLoops = rounds * teams.Count + 1;
             int currentRound = 0;
             int teamId1 = 0;
+            bool found = false;
 
             for (int rotation = 0; rotation < rotations; rotation++)
             {
                 for (int round = 0; round < rounds; round++)
                 {
                     currentRound++;
-                    int startID = round;
-                    if (startID >= teams.Count)
-                        startID = 0;
 
-                    for (int id = 0; id < teams.Count; id++)
-                    { 
-                        if (id > 0)
-                            teamId1++;
-                        else
-                            teamId1 = startID;
-
-                        if (teamId1 >= teams.Count)
-                            teamId1 = 0;
-
-                        bool gameFound = false;
-                        int teamId2 = gamesToPlay[teamId1, round];
-                        if (teamId2 == -1)
+                    for (int tt = 0; tt < teams.Count; tt++)
+                    {
+                        int t2 = gamesToPlay[tt, round];
+                        if (tt < t2)
                         {
-                            matchResult.Add(new Matches { RoundNumber = currentRound, Event = "BYE", TeamOne = teams[teamId1] });
-                        }
-                        else if (teamId1 < teamId2)
-                        {
-                            for (int gameLoops = 0; gameLoops < games.Count && gameFound == false; gameLoops++)
+                            int val = -1;
+                            found = false;
+                            while (found == false)
                             {
-                                int loopCount = 0;
-                                int value1 = 0;
-                                int value2 = 0;
-                                int currentLow = 0;
-                                int saveValue;
-
-                                while (gameFound == false && loopCount <= maxLoops) //prevent infinite loop if something goes wrong
+                                val++;
+                                for (int gid = 0; gid < games.Count; gid++)
                                 {
-                                    if (loopCount > 0)
+                                    if (roundCounter[round, gid] == rotation)
                                     {
-                                        if (value2 == rounds)
+                                        if (Sum(eventCounter[tt, gid], eventCounter[t2, gid]) == val)
                                         {
-                                            value1 = currentLow + 1;
-                                            value2 = value1;
-                                            currentLow++;
-                                        }
-                                        else if (value1 == value2)
-                                        {
-                                            value1++;
-                                        }
-                                        else if (value1 < value2)
-                                        {
-                                            saveValue = value1;
-                                            value1 = value2 + 1;
-                                            value2 = saveValue;
-                                        }
-                                        else
-                                        {
-                                            saveValue = value1;
-                                            value1 = value2;
-                                            value2 = saveValue;
+                                            matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gid], TeamOne = teams[tt], TeamTwo = teams[t2] });
+                                            eventCounter[tt, gid]++;
+                                            eventCounter[t2, gid]++;
+                                            roundCounter[round, gid]++;
+                                            found = true;
+                                            break;
                                         }
                                     }
-
-                                    if (round % 2 == 0)
-                                    {
-                                        for (int gg = (games.Count-1); gg >= 0; gg--)
-                                        {
-                                            if (roundCounter[round, gg] == rotation)
-                                            {
-                                                if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
-                                                {
-                                                    matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
-                                                    eventCounter[teamId1, gg]++;
-                                                    eventCounter[teamId2, gg]++;
-                                                    teamRoundCounter[teamId1, round]++;
-                                                    teamRoundCounter[teamId2, round]++;
-                                                    roundCounter[round, gg]++;
-                                                    gameFound = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        for (int gg = 0; gg < games.Count; gg++)
-                                        {
-                                            if (roundCounter[round, gg] == rotation)
-                                            {
-                                                if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
-                                                {
-                                                    matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
-                                                    eventCounter[teamId1, gg]++;
-                                                    eventCounter[teamId2, gg]++;
-                                                    teamRoundCounter[teamId1, round]++;
-                                                    teamRoundCounter[teamId2, round]++;
-                                                    roundCounter[round, gg]++;
-                                                    gameFound = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    loopCount++;
-                                }
+                                }      
                             }
                         }
                     }
+                        
+                    //int startID = round;
+                    //if (startID >= teams.Count)
+                    //    startID = 0;
+
+                    //for (int id = 0; id < teams.Count; id++)
+                    //{ 
+                    //    if (id > 0)
+                    //        teamId1++;
+                    //    else
+                    //        teamId1 = startID;
+
+                    //    if (teamId1 >= teams.Count)
+                    //        teamId1 = 0;
+
+                    //    bool gameFound = false;
+                    //    int teamId2 = gamesToPlay[teamId1, round];
+                    //    if (teamId2 == -1)
+                    //    {
+                    //        matchResult.Add(new Matches { RoundNumber = currentRound, Event = "BYE", TeamOne = teams[teamId1] });
+                    //    }
+                    //    else if (teamId1 < teamId2)
+                    //    {
+                    //        for (int gameLoops = 0; gameLoops < games.Count && gameFound == false; gameLoops++)
+                    //        {
+                    //            int loopCount = 0;
+                    //            int value1 = 0;
+                    //            int value2 = 0;
+                    //            int currentLow = 0;
+                    //            int saveValue;
+
+                    //            while (gameFound == false && loopCount <= maxLoops) //prevent infinite loop if something goes wrong
+                    //            {
+                    //                if (loopCount > 0)
+                    //                {
+                    //                    if (value2 == rounds)
+                    //                    {
+                    //                        value1 = currentLow + 1;
+                    //                        value2 = value1;
+                    //                        currentLow++;
+                    //                    }
+                    //                    else if (value1 == value2)
+                    //                    {
+                    //                        value1++;
+                    //                    }
+                    //                    else if (value1 < value2)
+                    //                    {
+                    //                        saveValue = value1;
+                    //                        value1 = value2 + 1;
+                    //                        value2 = saveValue;
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        saveValue = value1;
+                    //                        value1 = value2;
+                    //                        value2 = saveValue;
+                    //                    }
+                    //                }
+
+                    //                if (round % 2 == 0)
+                    //                {
+                    //                    for (int gg = (games.Count-1); gg >= 0; gg--)
+                    //                    {
+                    //                        if (roundCounter[round, gg] == rotation)
+                    //                        {
+                    //                            if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                    //                            {
+                    //                                matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
+                    //                                eventCounter[teamId1, gg]++;
+                    //                                eventCounter[teamId2, gg]++;
+                    //                                teamRoundCounter[teamId1, round]++;
+                    //                                teamRoundCounter[teamId2, round]++;
+                    //                                roundCounter[round, gg]++;
+                    //                                gameFound = true;
+                    //                                break;
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    for (int gg = 0; gg < games.Count; gg++)
+                    //                    {
+                    //                        if (roundCounter[round, gg] == rotation)
+                    //                        {
+                    //                            if (eventCounter[teamId1, gg] == value1 && eventCounter[teamId2, gg] == value2)
+                    //                            {
+                    //                                matchResult.Add(new Matches { RoundNumber = currentRound, Event = games[gg], TeamOne = teams[teamId1], TeamTwo = teams[teamId2] });
+                    //                                eventCounter[teamId1, gg]++;
+                    //                                eventCounter[teamId2, gg]++;
+                    //                                teamRoundCounter[teamId1, round]++;
+                    //                                teamRoundCounter[teamId2, round]++;
+                    //                                roundCounter[round, gg]++;
+                    //                                gameFound = true;
+                    //                                break;
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                }
+                    //                loopCount++;
+                    //            }
+                    //        }
+                    //    }
+                    //}
                 }    
             }
             return matchResult;
+        }
+
+        private int Sum(int n1, int n2)
+        {
+            return n1 + n2;
         }
 
         private const int BYE = -1;
