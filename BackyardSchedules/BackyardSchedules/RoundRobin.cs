@@ -177,7 +177,7 @@ namespace BackyardSchedules
             return results2;
         }
 
-        static int[,] GenerateRoundRobin(int num_teams)
+        public int[,] GenerateRoundRobin(int num_teams)
         {
             if (num_teams % 2 == 0)
                 return GenerateRoundRobinEven(num_teams);
