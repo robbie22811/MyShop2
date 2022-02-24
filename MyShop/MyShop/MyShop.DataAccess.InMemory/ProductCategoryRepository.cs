@@ -32,12 +32,12 @@ namespace MyShop.DataAccess.InMemory
             productCategories.Add(p);
         }
 
-        public void Update(ProductCategory productCategory)
+        public void Update(ProductCategory product)
         {
-            ProductCategory productCategoryToUpdate = productCategories.Find(p => p.Id == productCategory.Id);
+            ProductCategory productToUpdate = productCategories.Find(p => p.Id == product.Id);
 
-            if (productCategoryToUpdate != null)
-                productCategoryToUpdate = productCategory;
+            if (productToUpdate != null)
+                productToUpdate = product;
             else
             {
                 throw new Exception("Product Category Not Found");
@@ -46,10 +46,10 @@ namespace MyShop.DataAccess.InMemory
 
         public ProductCategory Find(string id)
         {
-            ProductCategory productCategory = productCategories.Find(p => p.Id == id);
+            ProductCategory product = productCategories.Find(p => p.Id == id);
 
-            if (productCategory != null)
-                return productCategory;
+            if (product != null)
+                return product;
             else
             {
                 throw new Exception("Product Category Not Found");
@@ -63,10 +63,10 @@ namespace MyShop.DataAccess.InMemory
 
         public void Delete(string id)
         {
-            ProductCategory productCategoryToDelete = productCategories.Find(p => p.Id == id);
+            ProductCategory productToDelete = productCategories.Find(p => p.Id == id);
 
-            if (productCategoryToDelete != null)
-                productCategories.Remove(productCategoryToDelete);
+            if (productToDelete != null)
+                productCategories.Remove(productToDelete);
             else
             {
                 throw new Exception("Product Category Not Found");
