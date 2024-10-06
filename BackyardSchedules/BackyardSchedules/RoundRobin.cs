@@ -34,7 +34,11 @@ namespace BackyardSchedules
                     for (int tt = 0; tt < teams.Count; tt++)
                     {
                         int t2 = gamesToPlay[tt, round];
-                        if ((tt < t2 && currentRound % gameSum != 0) || (tt > t2 && currentRound % gameSum == 0)) 
+                        if (t2 == -1)
+                        {
+                            matchResult.Add(new Matches { RoundNumber = currentRound, Event = "BYE", TeamOne = teams[tt] });
+                        }
+                        else if (tt < t2) 
                         {
                             int val = -1;
                             found = false;

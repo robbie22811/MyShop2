@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindDrawMVC", "BlindDrawMVC.csproj", "{3D765AAF-24F2-4F19-AD3F-02890F3CE0F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindDrawMVC.Tests", "..\BlindDrawMVC.Tests\BlindDrawMVC.Tests.csproj", "{FA19F26A-5369-4DD0-A775-1CF3195CEDA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D765AAF-24F2-4F19-AD3F-02890F3CE0F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D765AAF-24F2-4F19-AD3F-02890F3CE0F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D765AAF-24F2-4F19-AD3F-02890F3CE0F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D765AAF-24F2-4F19-AD3F-02890F3CE0F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA19F26A-5369-4DD0-A775-1CF3195CEDA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA19F26A-5369-4DD0-A775-1CF3195CEDA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA19F26A-5369-4DD0-A775-1CF3195CEDA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA19F26A-5369-4DD0-A775-1CF3195CEDA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2E2A653-6250-4A9B-BBA8-F2FA72861FC4}
+	EndGlobalSection
+EndGlobal

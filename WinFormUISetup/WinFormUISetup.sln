@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WinFormUISetup", "WinFormUISetup.vdproj", "{86C8C070-461B-4CF6-A2FF-7C5E97E5DB0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86C8C070-461B-4CF6-A2FF-7C5E97E5DB0F}.Debug|Default.ActiveCfg = Debug
+		{86C8C070-461B-4CF6-A2FF-7C5E97E5DB0F}.Debug|Default.Build.0 = Debug
+		{86C8C070-461B-4CF6-A2FF-7C5E97E5DB0F}.Release|Default.ActiveCfg = Release
+		{86C8C070-461B-4CF6-A2FF-7C5E97E5DB0F}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B170114-FBEF-4A1B-80CA-43944BD9E2F5}
+	EndGlobalSection
+EndGlobal

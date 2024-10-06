@@ -1,0 +1,34 @@
+﻿@page "/todo"
+
+<!-- <h3>Todo @todos.Count(todo => !todo.IsDone) </h3> !-->
+<h3> Active Player Count @players.Count(player => player.IsActive)</h3>
+<ul>
+    @foreach (var p in players)
+    {
+        <li>
+            <input type="checkbox" @bind="p.IsActive" />
+            <input @bind="p.PlayerName" />
+            <input @bind="p.Handicap" />
+        </li>
+    }
+</ul>
+
+<input placeholder="Player Name" @bind="newPlayer"/>
+<button @onclick="AddPlayer">Add</button> 
+
+@code {
+    private List<TodoItem> todos = new();
+    private List<Player> players = new();
+    private string? newPlayer;
+
+    private void AddPlayer()
+    {
+        //do something
+        if(!string.IsNullOrWhiteSpace(newPlayer))
+        {
+            //todos.Add(new TodoItem { Title = newTodo });
+            players.Add(new Player { PlayerName = newPlayer });
+            newPlayer = string.Empty;
+        }
+    }
+}
