@@ -67,8 +67,9 @@ namespace BackyardSchedules
             List<string> eventList = new List<string> { "bags", "darts", "bocce", "rollors" };
 
             // Get the teams.
-            // Textbox on the webform -- string all_teams = txtTeams.Text;
-            string all_teams = "One\rTwo\nThree\nFour\nFive\nSix\nSeven\nEight";
+            // Textbox on the webform -- string all_teams 
+          
+            string all_teams = "One\rTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine";
             List<string> team_names = GenerateTeams(all_teams);
 
             int teamsThatPlay = 0;
